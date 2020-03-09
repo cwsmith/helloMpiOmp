@@ -1,15 +1,16 @@
 program hello
+  use omp_lib
   include 'mpif.h'
-  integer nthreads, maxthreads, tid, omp_get_num_threads, omp_get_thread_num
+  integer nthreads, maxthreads, tid
   integer rank, size, ierror, tag, status(MPI_STATUS_SIZE)
    
   call MPI_INIT(ierror)
   call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierror)
   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
 
+  maxthreads = omp_get_max_threads()
   !$omp parallel
   !$omp master
-  maxthreads = omp_get_max_threads()
   nthreads = omp_get_num_threads()
   !$omp end master
   !$omp end parallel
