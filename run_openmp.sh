@@ -20,13 +20,19 @@ mv /tmp/tmp.$SLURM_JOB_ID /tmp/hosts.$SLURM_JOB_ID
 module load xl_r/16.1.1
 module load spectrum-mpi
 
+nthreads=6
+bin=./fhello
+
+set -x
+which mpirun
 mpirun -hostfile /tmp/hosts.$SLURM_JOB_ID -np $SLURM_NTASKS \
-  /bin/bash -c "export OMP_NUM_THREADS=14; ./hello"
+  /bin/bash -c "export OMP_NUM_THREADS=${nthreads}; ${bin}"
 
-mpirun -x OMP_NUM_THREADS=14 -hostfile /tmp/hosts.$SLURM_JOB_ID -np $SLURM_NTASKS ./hello
+mpirun -x OMP_NUM_THREADS=${nthreads} -hostfile /tmp/hosts.$SLURM_JOB_ID -np $SLURM_NTASKS ${bin}
 
-export OMP_NUM_THREADS=14
+export OMP_NUM_THREADS=${nthreads}
 
-mpirun -hostfile /tmp/hosts.$SLURM_JOB_ID -np $SLURM_NTASKS ./hello
+mpirun -hostfile /tmp/hosts.$SLURM_JOB_ID -np $SLURM_NTASKS ${bin}
+set +x
 
 rm /tmp/hosts.$SLURM_JOB_ID
